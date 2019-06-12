@@ -18,8 +18,27 @@ except IOError:
     print("Config file not found!")
     sys.exit(1)
 
-token = config["token"]
+token = config["client-token"]
+juan_name = config["juan-name"]
+juan_discriminator = config["juan-discriminator"]
+
+# Start the bot client
+client = discord.Client()
+
+# Bot events
+@client.event
+async def on_ready():
+    print("Successfully logged in as {0.user}".format(client))
 
 
-# DEBUG
-print(token)
+@client.event
+async def on_message(message):
+    if (
+        message.author.name == juan_name
+        and message.author.discriminator == juan_discriminator
+    ):
+        await message.channel.send("stop")
+
+
+# Run the bot
+client.run(token)

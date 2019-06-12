@@ -1,1 +1,3 @@
-token: "mytokenhere"
+client-token: "mytokenhere"
+juan-name: "juan"
+juan-discriminator: "9999"
