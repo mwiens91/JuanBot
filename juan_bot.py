@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import datetime
 import json
 import os
 import sys
@@ -47,19 +48,36 @@ except IOError:
 # Start the bot client
 client = discord.Client()
 
-# Bot events
+# Startup message
 @client.event
 async def on_ready():
     print("Successfully logged in as {0.user}".format(client))
 
 
+# "Juan is typing" tracking
+juan_is_typing = False
+juan_is_typing_start = None
+messages_sent = 0
+
+
 @client.event
-async def on_message(message):
-    if (
-        message.author.name == juan_name
-        and message.author.discriminator == juan_discriminator
-    ):
-        await message.channel.send("stop")
+async def on_typing(channel, user, when):
+    global juan_is_typing, juan_is_typing_start, messages_sent
+
+    if user.name == juan_name and user.discriminator == juan_discriminator:
+        # Log start time if Juan just started typing
+        if not juan_is_typing:
+            juan_is_typing = True
+            juan_is_typing_start = datetime.datetime.now(timezone)
+            messages_sent = 0
+        else:
+            if datetime.datetime.now(
+                timezone
+            ) - juan_is_typing_start >= datetime.timedelta(
+                seconds=30 + 15 * messages_sent
+            ):
+                messages_sent += 1
+                await channel.send("stop")
 
 
 # Run the bot
