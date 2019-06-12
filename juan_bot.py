@@ -4,6 +4,7 @@ import json
 import os
 import sys
 import discord
+import pytz
 import yaml
 
 
@@ -20,8 +21,12 @@ except IOError:
     sys.exit(1)
 
 token = config["client-token"]
+
 juan_name = config["juan-name"]
 juan_discriminator = config["juan-discriminator"]
+
+timezone = pytz.timezone(config["timezone"])
+
 
 # Unpack previous record
 record_path = os.path.join(

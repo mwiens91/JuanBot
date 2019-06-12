@@ -1,3 +1,4 @@
 client-token: "mytokenhere"
+timezone: "America/Vancouver"
 juan-name: "juan"
 juan-discriminator: "9999"
