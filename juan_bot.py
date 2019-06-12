@@ -32,13 +32,12 @@ try:
     with open(record_path, "r") as record_file:
         record_dict = json.load(record_file)
 
-    personal_best = record_dict["pb"]
 except IOError:
     # No previous record set
-    personal_best = 0
+    record_dict = {"time": 0, "date": None}
 
     with open(record_path, "w") as record_file:
-        json.dump({"pb": personal_best}, record_file)
+        json.dump(record_dict, record_file)
 
 # Start the bot client
 client = discord.Client()
