@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import json
 import os
 import sys
 import discord
@@ -21,6 +22,23 @@ except IOError:
 token = config["client-token"]
 juan_name = config["juan-name"]
 juan_discriminator = config["juan-discriminator"]
+
+# Unpack previous record
+record_path = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), "typing_record.json"
+)
+
+try:
+    with open(record_path, "r") as record_file:
+        record_dict = json.load(record_file)
+
+    personal_best = record_dict["pb"]
+except IOError:
+    # No previous record set
+    personal_best = 0
+
+    with open(record_path, "w") as record_file:
+        json.dump({"pb": personal_best}, record_file)
 
 # Start the bot client
 client = discord.Client()
