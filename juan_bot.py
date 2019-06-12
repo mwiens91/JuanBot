@@ -22,10 +22,8 @@ except IOError:
     sys.exit(1)
 
 token = config["client-token"]
-
 juan_name = config["juan-name"]
 juan_discriminator = config["juan-discriminator"]
-
 timezone = pytz.timezone(config["timezone"])
 
 
@@ -37,7 +35,6 @@ record_path = os.path.join(
 try:
     with open(record_path, "r") as record_file:
         record_dict = json.load(record_file)
-
 except IOError:
     # No previous record set
     record_dict = {"time": 0, "date": None}
@@ -51,7 +48,7 @@ client = discord.Client()
 # Startup message
 @client.event
 async def on_ready():
-    print("Successfully logged in as {0.user}".format(client))
+    print("Successfully logged in as %s" % client.user)
 
 
 # "Juan is typing" tracking
@@ -61,16 +58,18 @@ messages_sent = 0
 
 
 @client.event
-async def on_typing(channel, user, when):
+async def on_typing(channel, user, _):
     global juan_is_typing, juan_is_typing_start, messages_sent
 
     if user.name == juan_name and user.discriminator == juan_discriminator:
-        # Log start time if Juan just started typing
         if not juan_is_typing:
+            # Juan just started typing
             juan_is_typing = True
             juan_is_typing_start = datetime.datetime.now(timezone)
             messages_sent = 0
         else:
+            # Juan is currently typing. Tell him to stop if he's typing
+            # for >= 30 seconds and every 15 seconds after that.
             if datetime.datetime.now(
                 timezone
             ) - juan_is_typing_start >= datetime.timedelta(
