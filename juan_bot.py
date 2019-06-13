@@ -76,7 +76,6 @@ async def on_typing(channel, user, _):
 
     if user.name == juan_name and user.discriminator == juan_discriminator:
         current_datetime = datetime.datetime.now(timezone)
-        print(juan_is_typing, juan_is_typing_start, juan_is_typing_last)
 
         # If Juan typed prior to the last 45 seconds but didn't send a
         # message, reset state variables
@@ -122,8 +121,6 @@ async def on_message(message):
         juan_is_typing = False
         messages_sent = 0
 
-        print(typing_timedelta)
-        print(record_dict["timedelta"])
         if typing_timedelta > record_dict["timedelta"]:
             # Save this time
             record_dict["datetime"] = current_datetime
