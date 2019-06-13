@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
 import datetime
-import json
 import os
+import pickle
 import sys
 import discord
 import pytz
@@ -29,18 +29,18 @@ timezone = pytz.timezone(config["timezone"])
 
 # Unpack previous record
 record_path = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)), "typing_record.json"
+    os.path.dirname(os.path.abspath(__file__)), "typing_record.pickle"
 )
 
 try:
-    with open(record_path, "r") as record_file:
-        record_dict = json.load(record_file)
+    with open(record_path, "rb") as record_file:
+        record_dict = pickle.load(record_file)
 except IOError:
     # No previous record set
-    record_dict = {"time": 0, "date": None}
+    record_dict = {"timedelta": datetime.timedelta(0), "datetime": None}
 
-    with open(record_path, "w") as record_file:
-        json.dump(record_dict, record_file)
+    with open(record_path, "wb") as record_file:
+        pickle.dump(record_dict, record_file, protocol=pickle.HIGHEST_PROTOCOL)
 
 # Start the bot client
 client = discord.Client()

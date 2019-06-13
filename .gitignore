@@ -130,4 +130,6 @@ dmypy.json
 
 # config file
 config.yaml
-typing_record.json
+
+# record file
+typing_record.pickle
