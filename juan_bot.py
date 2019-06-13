@@ -3,11 +3,23 @@
 import datetime
 import os
 import pickle
+import random
 import sys
 import discord
 import pytz
 import yaml
 
+
+# "Stop" message variations
+STOP_MESSAGES = [
+    "Stop.",
+    "Uh oh.",
+    "Incoming.",
+    "Get ready.",
+    "Here we go ...",
+    "-_-",
+    "Plz no.",
+]
 
 # Parse config file
 config_path = os.path.join(
@@ -90,7 +102,7 @@ async def on_typing(channel, user, _):
                 seconds=30 + 15 * messages_sent
             ):
                 messages_sent += 1
-                await channel.send("stop")
+                await channel.send(random.choice(STOP_MESSAGES))
 
 
 @client.event
