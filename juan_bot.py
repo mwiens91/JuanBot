@@ -54,29 +54,79 @@ async def on_ready():
 # "Juan is typing" tracking
 juan_is_typing = False
 juan_is_typing_start = None
+juan_is_typing_last = datetime.datetime.now(timezone)
 messages_sent = 0
 
 
 @client.event
 async def on_typing(channel, user, _):
-    global juan_is_typing, juan_is_typing_start, messages_sent
+    global juan_is_typing, juan_is_typing_start, juan_is_typing_last, messages_sent, timezone
 
     if user.name == juan_name and user.discriminator == juan_discriminator:
+        current_datetime = datetime.datetime.now(timezone)
+        print(juan_is_typing, juan_is_typing_start, juan_is_typing_last)
+
+        # If Juan typed prior to the last 45 seconds but didn't send a
+        # message, reset state variables
+        if (
+            juan_is_typing
+            and juan_is_typing_last - current_datetime
+            > datetime.timedelta(seconds=45)
+        ):
+            juan_is_typing = False
+
         if not juan_is_typing:
             # Juan just started typing
             juan_is_typing = True
-            juan_is_typing_start = datetime.datetime.now(timezone)
-            messages_sent = 0
+            juan_is_typing_start = current_datetime
+            juan_is_typing_last = current_datetime
         else:
+            # Record that this is the latest time Juan started typing
+            juan_is_typing_last = current_datetime
+
             # Juan is currently typing. Tell him to stop if he's typing
             # for >= 30 seconds and every 15 seconds after that.
-            if datetime.datetime.now(
-                timezone
-            ) - juan_is_typing_start >= datetime.timedelta(
+            if current_datetime - juan_is_typing_start >= datetime.timedelta(
                 seconds=30 + 15 * messages_sent
             ):
                 messages_sent += 1
                 await channel.send("stop")
+
+
+@client.event
+async def on_message(message):
+    global record_dict, juan_is_typing, juan_is_typing_start, juan_is_typing_last, messages_sent
+
+    if (
+        message.author.name == juan_name
+        and message.author.discriminator == juan_discriminator
+    ):
+        current_datetime = datetime.datetime.now(timezone)
+
+        # Record the typing time
+        typing_timedelta = current_datetime - juan_is_typing_start
+
+        # Reset state variables
+        juan_is_typing = False
+        messages_sent = 0
+
+        print(typing_timedelta)
+        print(record_dict["timedelta"])
+        if typing_timedelta > record_dict["timedelta"]:
+            # Save this time
+            record_dict["datetime"] = current_datetime
+            record_dict["timedelta"] = typing_timedelta
+
+            with open(record_path, "wb") as record_file:
+                pickle.dump(
+                    record_dict, record_file, protocol=pickle.HIGHEST_PROTOCOL
+                )
+
+            # Send a message about the new typing record
+            await message.channel.send(
+                '%s just set a new "%s is typing ..." record!!! %.2f seconds!'
+                % (juan_name, juan_name, typing_timedelta.total_seconds())
+            )
 
 
 # Run the bot
