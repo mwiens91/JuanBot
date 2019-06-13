@@ -95,9 +95,12 @@ async def on_typing(channel, user, _):
             # Record that this is the latest time Juan started typing
             juan_is_typing_last = current_datetime
 
-            # Juan is currently typing. Tell him to stop if he's typing
-            # for >= 30 seconds and every 15 seconds after that.
-            if current_datetime - juan_is_typing_start >= datetime.timedelta(
+            # Juan is currently typing. Randomly tell him to stop if
+            # he's typing for >= 30 seconds and every 15 seconds after
+            # that.
+            if random.choice(
+                [True, False]
+            ) and current_datetime - juan_is_typing_start >= datetime.timedelta(
                 seconds=30 + 15 * messages_sent
             ):
                 messages_sent += 1
