@@ -177,6 +177,15 @@ async def on_message(message):
     ):
         current_datetime = datetime.datetime.now(timezone)
 
+        # If Juan typed prior to the last GRACE_PERIOD_SECONDS but
+        # didn't send a message, reset state variables and exit
+        if juan_is_typing_last - current_datetime > datetime.timedelta(
+            seconds=GRACE_PERIOD_SECONDS
+        ):
+            unset_state_vars()
+
+            return
+
         # Record the typing time
         typing_timedelta = current_datetime - juan_is_typing_start
 
