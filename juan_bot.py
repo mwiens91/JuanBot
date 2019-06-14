@@ -9,8 +9,13 @@ import discord
 import pytz
 import yaml
 
-# "Stop" message variations
-STOP_MESSAGES = [
+# Constants
+GRACE_PERIOD_SECONDS = 45
+STOP_MESSAGE_SECONDS = 30
+STOP_MESSAGE_INCREMENT_SECONDS = 15
+
+# Stop messages (this is going to be mutable)
+stop_messages = [
     "Stop.",
     "Uh oh.",
     "Incoming.",
@@ -117,12 +122,12 @@ async def on_typing(channel, user, _):
     if user_is_juan(user.name, user.discriminator):
         current_datetime = datetime.datetime.now(timezone)
 
-        # If Juan typed prior to the last 45 seconds but didn't send a
-        # message, reset state variables
+        # If Juan typed prior to the last GRACE_PERIOD_SECONDS but
+        # didn't send a message, reset state variables
         if (
             juan_is_typing
             and juan_is_typing_last - current_datetime
-            > datetime.timedelta(seconds=45)
+            > datetime.timedelta(seconds=GRACE_PERIOD_SECONDS)
         ):
             unset_state_vars()
 
@@ -134,15 +139,16 @@ async def on_typing(channel, user, _):
             update_last_typed()
 
             # Juan is currently typing. Randomly tell him to stop if
-            # he's typing for >= 30 seconds and every 15 seconds after
-            # that.
+            # he's typing for >= STOP_MESSAGE_SECONDS and every
+            # STOP_MESSAGE_INCREMENT_SECONDS after that.
             if random.choice(
                 [True, False, False, False, False, False, False, False]
             ) and current_datetime - juan_is_typing_start >= datetime.timedelta(
-                seconds=30 + 15 * messages_sent
+                seconds=STOP_MESSAGE_SECONDS
+                + STOP_MESSAGE_INCREMENT_SECONDS * messages_sent
             ):
                 increment_messages_sent()
-                await channel.send(random.choice(STOP_MESSAGES))
+                await channel.send(random.choice(stop_messages))
 
 
 @client.event
