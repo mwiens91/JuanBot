@@ -209,13 +209,13 @@ async def on_message(message):
     elif message.content.lower().startswith("<@%s> pb" % client_id):
         # Print personal best
         if record_dict["datetime"] is None:
-            await message.channel.send("No pb set >_>")
+            await message.channel.send("No pb >_>")
         else:
             await message.channel.send(
                 "%.2f seconds on %s"
                 % (
                     record_dict["timedelta"].total_seconds(),
-                    record_dict["datetime"],
+                    record_dict["datetime"].strftime("%Y-%m-%d %H:%M"),
                 )
             )
     elif (
