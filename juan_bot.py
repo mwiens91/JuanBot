@@ -111,6 +111,21 @@ def update_record_dict(timedelta):
         pickle.dump(record_dict, record_file, protocol=pickle.HIGHEST_PROTOCOL)
 
 
+def get_stop_message():
+    global stop_messages
+
+    # Grab the first message from the list, randomize the rest, and then
+    # throw the selected message in the back
+    selected_message = stop_messages[0]
+
+    remaining_messages = stop_messages[1:]
+    random.shuffle(remaining_messages)
+
+    stop_messages = remaining_messages + [selected_message]
+
+    return selected_message
+
+
 # Bot events
 @client.event
 async def on_ready():
@@ -152,7 +167,7 @@ async def on_typing(channel, user, _):
 
                 # Randomly decide whether to send a message or not
                 if random.choice([True] * 1 + [False] * 9):
-                    await channel.send(random.choice(stop_messages))
+                    await channel.send(get_stop_message())
 
 
 @client.event
