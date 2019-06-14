@@ -14,17 +14,6 @@ GRACE_PERIOD_SECONDS = 45
 STOP_MESSAGE_SECONDS = 30
 STOP_MESSAGE_INCREMENT_SECONDS = 15
 
-# Stop messages (this is going to be mutable)
-stop_messages = [
-    "Stop.",
-    "Uh oh.",
-    "Incoming.",
-    "Get ready.",
-    "Here we go ...",
-    "-_-",
-    "Plz no.",
-]
-
 # Parse config file
 config_path = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), "config.yaml"
@@ -69,6 +58,20 @@ juan_is_typing = False
 juan_is_typing_start = None
 juan_is_typing_last = None
 messages_sent = 0
+
+# Stop messages (this list will be changed in place)
+stop_messages = [
+    "Let's go %s!" % juan_name,
+    "PB incoming!",
+    "Keep it coming!",
+    "Words per minute almost 0! Let's go!!!",
+    "Here we go!",
+    "ヽ(^o^)ノ",
+    "ლ(╹◡╹ლ)",
+    "↖(^▽^)↗",
+    "This is amazing 0_0",
+    "Holy",
+]
 
 # Helper functions
 def user_is_bot_owner(username, discriminator):
@@ -177,7 +180,7 @@ async def on_typing(channel, user, _):
                 increment_messages_sent()
 
                 # Randomly decide whether to send a message or not
-                if random.choice([True] * 1 + [False] * 9):
+                if random.choice([True] * 1 + [False] * 5):
                     await channel.send(get_stop_message())
 
 
