@@ -62,6 +62,50 @@ juan_is_typing_start = None
 juan_is_typing_last = None
 messages_sent = 0
 
+# Helper functions
+def user_is_juan(username, discriminator):
+    return username == juan_name and discriminator == juan_discriminator
+
+
+def set_state_vars():
+    global juan_is_typing, juan_is_typing_start, juan_is_typing_last
+
+    juan_is_typing = True
+    juan_is_typing_start = current_datetime
+    juan_is_typing_last = current_datetime
+
+
+def unset_state_vars():
+    global juan_is_typing, juan_is_typing_start, juan_is_typing_last, messages_sent
+
+    juan_is_typing = False
+    juan_is_typing_start = None
+    juan_is_typing_last = None
+    messages_sent = 0
+
+
+def increment_messages_sent():
+    global messages_sent
+
+    messages_sent += 1
+
+
+def update_last_typed():
+    global juan_is_typing_last
+
+    juan_is_typing_last = datetime.datetime.now(timezone)
+
+
+def update_record_dict(timedelta):
+    global record_dict
+
+    record_dict["datetime"] = datetime.datetime.now()
+    record_dict["timedelta"] = timedelta
+
+    with open(record_path, "wb") as record_file:
+        pickle.dump(record_dict, record_file, protocol=pickle.HIGHEST_PROTOCOL)
+
+
 # Bot events
 @client.event
 async def on_ready():
@@ -70,9 +114,7 @@ async def on_ready():
 
 @client.event
 async def on_typing(channel, user, _):
-    global juan_is_typing, juan_is_typing_start, juan_is_typing_last, messages_sent, timezone
-
-    if user.name == juan_name and user.discriminator == juan_discriminator:
+    if user_is_juan(user.name, user.discriminator):
         current_datetime = datetime.datetime.now(timezone)
 
         # If Juan typed prior to the last 45 seconds but didn't send a
@@ -82,16 +124,14 @@ async def on_typing(channel, user, _):
             and juan_is_typing_last - current_datetime
             > datetime.timedelta(seconds=45)
         ):
-            juan_is_typing = False
+            unset_state_vars()
 
         if not juan_is_typing:
             # Juan just started typing
-            juan_is_typing = True
-            juan_is_typing_start = current_datetime
-            juan_is_typing_last = current_datetime
+            set_state_vars()
         else:
             # Record that this is the latest time Juan started typing
-            juan_is_typing_last = current_datetime
+            update_last_typed()
 
             # Juan is currently typing. Randomly tell him to stop if
             # he's typing for >= 30 seconds and every 15 seconds after
@@ -101,18 +141,14 @@ async def on_typing(channel, user, _):
             ) and current_datetime - juan_is_typing_start >= datetime.timedelta(
                 seconds=30 + 15 * messages_sent
             ):
-                messages_sent += 1
+                increment_messages_sent()
                 await channel.send(random.choice(STOP_MESSAGES))
 
 
 @client.event
 async def on_message(message):
-    global record_dict, juan_is_typing, juan_is_typing_start, juan_is_typing_last, messages_sent
-
-    if (
-        juan_is_typing
-        and message.author.name == juan_name
-        and message.author.discriminator == juan_discriminator
+    if juan_is_typing and user_is_juan(
+        message.author.name, message.author.discriminator
     ):
         current_datetime = datetime.datetime.now(timezone)
 
@@ -120,18 +156,11 @@ async def on_message(message):
         typing_timedelta = current_datetime - juan_is_typing_start
 
         # Reset state variables
-        juan_is_typing = False
-        messages_sent = 0
+        unset_state_vars()
 
         if typing_timedelta > record_dict["timedelta"]:
             # Save this time
-            record_dict["datetime"] = current_datetime
-            record_dict["timedelta"] = typing_timedelta
-
-            with open(record_path, "wb") as record_file:
-                pickle.dump(
-                    record_dict, record_file, protocol=pickle.HIGHEST_PROTOCOL
-                )
+            update_record_dict(typing_timedelta)
 
             # Send a message about the new typing record
             await message.channel.send(
