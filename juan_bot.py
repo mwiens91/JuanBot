@@ -145,9 +145,13 @@ async def on_typing(channel, user, _):
                 seconds=STOP_MESSAGE_SECONDS
                 + STOP_MESSAGE_INCREMENT_SECONDS * messages_sent
             ):
+                # Increment the messages sent so that the above logic
+                # waits for another STOP_INCREMENT_SECONDS before
+                # re-firing
+                increment_messages_sent()
+
                 # Randomly decide whether to send a message or not
                 if random.choice([True] * 1 + [False] * 9):
-                    increment_messages_sent()
                     await channel.send(random.choice(stop_messages))
 
 
