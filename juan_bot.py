@@ -204,7 +204,7 @@ async def on_message(message):
                 '%s just set a new "**%s** is typing..." record!!! %.2f seconds!'
                 % (juan_name, juan_name, typing_timedelta.total_seconds())
             )
-    elif message.content.lower().startswith("<@%s> pb"):
+    elif message.content.lower().startswith("<@%s> pb" % client_id):
         # Print personal best
         if record_dict["datetime"] is None:
             await message.channel.send("No pb set >:(")
