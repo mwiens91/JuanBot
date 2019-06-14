@@ -141,14 +141,14 @@ async def on_typing(channel, user, _):
             # Juan is currently typing. Randomly tell him to stop if
             # he's typing for >= STOP_MESSAGE_SECONDS and every
             # STOP_MESSAGE_INCREMENT_SECONDS after that.
-            if random.choice(
-                [True, False, False, False, False, False, False, False]
-            ) and current_datetime - juan_is_typing_start >= datetime.timedelta(
+            if current_datetime - juan_is_typing_start >= datetime.timedelta(
                 seconds=STOP_MESSAGE_SECONDS
                 + STOP_MESSAGE_INCREMENT_SECONDS * messages_sent
             ):
-                increment_messages_sent()
-                await channel.send(random.choice(stop_messages))
+                # Randomly decide whether to send a message or not
+                if random.choice([True] * 1 + [False] * 9):
+                    increment_messages_sent()
+                    await channel.send(random.choice(stop_messages))
 
 
 @client.event
