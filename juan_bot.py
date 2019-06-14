@@ -109,7 +109,7 @@ def update_last_typed():
 def update_record_dict(timedelta):
     global record_dict
 
-    record_dict["datetime"] = datetime.datetime.now()
+    record_dict["datetime"] = datetime.datetime.now(timezone)
     record_dict["timedelta"] = timedelta
 
     with open(record_path, "wb") as record_file:
