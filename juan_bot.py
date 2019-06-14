@@ -66,7 +66,7 @@ async def on_ready():
 # "Juan is typing" tracking
 juan_is_typing = False
 juan_is_typing_start = None
-juan_is_typing_last = datetime.datetime.now(timezone)
+juan_is_typing_last = None
 messages_sent = 0
 
 
@@ -112,7 +112,8 @@ async def on_message(message):
     global record_dict, juan_is_typing, juan_is_typing_start, juan_is_typing_last, messages_sent
 
     if (
-        message.author.name == juan_name
+        juan_is_typing
+        and message.author.name == juan_name
         and message.author.discriminator == juan_discriminator
     ):
         current_datetime = datetime.datetime.now(timezone)
