@@ -136,7 +136,7 @@ async def on_message(message):
 
             # Send a message about the new typing record
             await message.channel.send(
-                '%s just set a new "%s is typing ..." record!!! %.2f seconds!'
+                '%s just set a new "**%s** is typing..." record!!! %.2f seconds!'
                 % (juan_name, juan_name, typing_timedelta.total_seconds())
             )
 
