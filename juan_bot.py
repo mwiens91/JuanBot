@@ -204,6 +204,18 @@ async def on_message(message):
                 '%s just set a new "**%s** is typing..." record!!! %.2f seconds!'
                 % (juan_name, juan_name, typing_timedelta.total_seconds())
             )
+    elif message.content.lower().startswith("<@%s> pb"):
+        # Print personal best
+        if record_dict["datetime"] is None:
+            await message.channel.send("No pb set >:(")
+        else:
+            await message.channel.send(
+                "%.2f seconds on %s"
+                % (
+                    record_dict[timedelta].total_seconds(),
+                    record_dict["datetime"],
+                )
+            )
     elif (
         message.author.name == bot_owner_name
         and message.author.discriminator == bot_owner_discriminator
