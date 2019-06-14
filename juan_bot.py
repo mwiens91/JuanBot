@@ -71,6 +71,12 @@ juan_is_typing_last = None
 messages_sent = 0
 
 # Helper functions
+def user_is_bot_owner(username, discriminator):
+    return (
+        username == bot_owner_name and discriminator == bot_owner_discriminator
+    )
+
+
 def user_is_juan(username, discriminator):
     return username == juan_name and discriminator == juan_discriminator
 
@@ -218,10 +224,7 @@ async def on_message(message):
                     record_dict["datetime"].strftime("%Y-%m-%d %H:%M"),
                 )
             )
-    elif (
-        message.author.name == bot_owner_name
-        and message.author.discriminator == bot_owner_discriminator
-    ):
+    elif user_is_bot_owner(message.author.name, message.author.discriminator):
         # Custom responses for the bot owner
         if message.content.lower().startswith("<@%s> behave" % client_id):
             await message.channel.send(
