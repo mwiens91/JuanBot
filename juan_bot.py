@@ -37,9 +37,12 @@ except IOError:
     print("Config file not found!")
     sys.exit(1)
 
+client_id = config["client-id"]
 token = config["client-token"]
 juan_name = config["juan-name"]
 juan_discriminator = config["juan-discriminator"]
+bot_owner_name = config["bot-owner-name"]
+bot_owner_discriminator = config["bot-owner-discriminator"]
 timezone = pytz.timezone(config["timezone"])
 
 
@@ -200,6 +203,15 @@ async def on_message(message):
             await message.channel.send(
                 '%s just set a new "**%s** is typing..." record!!! %.2f seconds!'
                 % (juan_name, juan_name, typing_timedelta.total_seconds())
+            )
+    elif (
+        message.author.name == bot_owner_name
+        and message.author.discriminator == bot_owner_discriminator
+    ):
+        # Custom responses for the bot owner
+        if message.content.lower().startswith("<@%s> behave" % client_id):
+            await message.channel.send(
+                "%s Yes master." % message.author.mention
             )
 
 

@@ -1,4 +1,7 @@
+client-id: "111111111111111111"
 client-token: "mytokenhere"
 timezone: "America/Vancouver"
 juan-name: "juan"
 juan-discriminator: "9999"
+bot-owner-name: "owner"
+bot-owner-discriminator: "9991"
