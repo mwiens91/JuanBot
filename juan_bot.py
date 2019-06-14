@@ -78,6 +78,8 @@ def user_is_juan(username, discriminator):
 def set_state_vars():
     global juan_is_typing, juan_is_typing_start, juan_is_typing_last
 
+    current_datetime = datetime.datetime.now(timezone)
+
     juan_is_typing = True
     juan_is_typing_start = current_datetime
     juan_is_typing_last = current_datetime
@@ -212,7 +214,7 @@ async def on_message(message):
             await message.channel.send(
                 "%.2f seconds on %s"
                 % (
-                    record_dict[timedelta].total_seconds(),
+                    record_dict["timedelta"].total_seconds(),
                     record_dict["datetime"],
                 )
             )
