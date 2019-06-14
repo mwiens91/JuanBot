@@ -9,7 +9,6 @@ import discord
 import pytz
 import yaml
 
-
 # "Stop" message variations
 STOP_MESSAGES = [
     "Stop.",
@@ -39,7 +38,7 @@ juan_discriminator = config["juan-discriminator"]
 timezone = pytz.timezone(config["timezone"])
 
 
-# Unpack previous record
+# Parse previous record from file
 record_path = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), "typing_record.pickle"
 )
@@ -57,17 +56,16 @@ except IOError:
 # Start the bot client
 client = discord.Client()
 
-# Startup message
-@client.event
-async def on_ready():
-    print("Successfully logged in as %s" % client.user)
-
-
-# "Juan is typing" tracking
+# Typing tracking state variables
 juan_is_typing = False
 juan_is_typing_start = None
 juan_is_typing_last = None
 messages_sent = 0
+
+# Bot events
+@client.event
+async def on_ready():
+    print("Successfully logged in as %s" % client.user)
 
 
 @client.event
