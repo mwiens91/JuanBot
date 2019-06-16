@@ -12,7 +12,7 @@ import yaml
 # Constants
 GRACE_PERIOD_SECONDS = 20
 STOP_MESSAGE_SECONDS = 30
-STOP_MESSAGE_INCREMENT_SECONDS = 15
+STOP_MESSAGE_INCREMENT_SECONDS = 30
 
 # Parse config file
 config_path = os.path.join(
@@ -155,7 +155,7 @@ async def on_typing(channel, user, _):
         # didn't send a message, reset state variables
         if (
             juan_is_typing
-            and juan_is_typing_last - current_datetime
+            and current_datetime - juan_is_typing_last
             > datetime.timedelta(seconds=GRACE_PERIOD_SECONDS)
         ):
             unset_state_vars()
@@ -193,7 +193,7 @@ async def on_message(message):
 
         # If Juan typed prior to the last GRACE_PERIOD_SECONDS but
         # didn't send a message, reset state variables and exit
-        if juan_is_typing_last - current_datetime > datetime.timedelta(
+        if current_datetime - juan_is_typing_last > datetime.timedelta(
             seconds=GRACE_PERIOD_SECONDS
         ):
             unset_state_vars()
