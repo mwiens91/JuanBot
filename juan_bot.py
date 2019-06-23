@@ -51,7 +51,7 @@ except IOError:
         pickle.dump(record_dict, record_file, protocol=pickle.HIGHEST_PROTOCOL)
 
 # Start the bot client
-client = discord.Client()
+client = discord.Client(activity=discord.Game(name="Cheering for Juan!"))
 
 # Typing tracking state variables
 juan_is_typing = False
