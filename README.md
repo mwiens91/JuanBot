@@ -1,3 +1,7 @@
+[![Python version](https://img.shields.io/badge/python-3.5%20|%203.6%20|%203.7-blue.svg)](https://github.com/mwiens91/JuanBot)
+[![Code style:
+black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
+
 # JuanBot
 
 > Definition: A **Juan** is a Discord user who types for a long time but
