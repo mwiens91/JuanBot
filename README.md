@@ -46,8 +46,8 @@ Run the [main script](juan_bot.py) with
 
 ## Commands
 
-The main command (the rest are secret :smirk:) you want to use to
-retreive typing records of the Juan is
+The main Discord command (the rest are secret :smirk:) you want to use
+to retreive typing records of the Juan is
 
 ```
 @JuanBot pb
