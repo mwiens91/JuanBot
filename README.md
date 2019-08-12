@@ -39,3 +39,15 @@ Run the [main script](juan_bot.py) with
 ```
 ./juan_bot.py
 ```
+
+## Commands
+
+The main command (the rest are secret :smirk:) you want to use to
+retreive typing records of the Juan is
+
+```
+@JuanBot pb
+```
+
+where you can replace `JuanBot` with whatever the username of the bot
+you've setup is.
