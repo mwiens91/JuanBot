@@ -215,7 +215,7 @@ async def on_message(message):
                 '%s just set a new "**%s** is typing..." record!!! %.2f seconds!'
                 % (juan_name, juan_name, typing_timedelta.total_seconds())
             )
-    elif message.content.lower().startswith("<@%s> pb" % client_id):
+    elif message.content.lower().startswith("<@!%s> pb" % client_id):
         # Print personal best
         if record_dict["datetime"] is None:
             await message.channel.send("No pb >_>")
@@ -229,7 +229,7 @@ async def on_message(message):
             )
     elif user_is_bot_owner(message.author.name, message.author.discriminator):
         # Custom responses for the bot owner
-        if message.content.lower().startswith("<@%s> behave" % client_id):
+        if message.content.lower().startswith("<@!%s> behave" % client_id):
             await message.channel.send(
                 "%s Yes master." % message.author.mention
             )
